@@ -26,6 +26,10 @@ a {
   color: #49fb35;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 button {
   border: none;
   background: none;
@@ -87,6 +91,10 @@ ol {
   border: 4px solid #49fb35;
 }
 
+/* .cell:hover {
+  cursor: url(/src/images/aim.png), pointer;
+} */
+
 .game-controls {
   display: flex;
   justify-content: flex-end;
@@ -110,14 +118,19 @@ ol {
 }
 
 .board-controls img:hover{
-  filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(144deg) brightness(103%) contrast(105%);
+  filter: invert(100%) sepia(2%) saturate(4991%) hue-rotate(327deg) brightness(117%) contrast(100%);
 }
 
 .speed-controls {
   margin-left: 0px;
 }
 
+.speed-controls button:hover {
+  border: 1px solid #49fb35;
+}
+
 .current {
+  background: none;
   color: #49fb35;
 }
 
@@ -223,3 +236,6 @@ ol {
     margin-bottom: 1rem;
   }
 }
+
+/* Crosshair Cursor */
+/* <a href="https://iconscout.com/icons/aim" target="_blank">Aim Icon</a> on <a href="https://iconscout.com">Iconscout</a> */

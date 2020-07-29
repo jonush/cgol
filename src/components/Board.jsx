@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { glider, spaceships, oscillator } from '../gridPresets';
 import { produce } from 'immer';
+import useSound from 'use-sound';
+import { glider, spaceships, oscillator } from '../gridPresets';
 import play from '../images/play.svg';
 import pause from '../images/pause.svg';
 import random from '../images/random.svg';
@@ -8,7 +9,10 @@ import clear from '../images/cancel.svg';
 import glide from '../images/gliders.png';
 import space from '../images/spaceships.png';
 import osc from '../images/oscillators.png';
-import '../App.css';
+import beep1 from '../sounds/beep1.mp3';
+import beep2 from '../sounds/beep2.mp3';
+import beep3 from '../sounds/beep3.mp3';
+import beep4 from '../sounds/beep4.mp3';
 
 // number of rows and columns for the grid
 const numRows = 25;
@@ -25,6 +29,9 @@ const operations = [
     [1, 1],
     [-1, 0]
 ]
+
+// array of sound effects
+const soundEffects = [ beep1, beep2, beep3, beep4 ];
 
 // generate the grid
 const generateGrid = () => {
@@ -49,6 +56,10 @@ const Board = () => {
     // log the generations
     const [ gen, setGen ] = useState(0);
 
+    // sound effect when populating game board with cells
+    // const sound = soundEffects[Math.floor(Math.random() * soundEffects.length)];
+    // const [playSound] = useSound(sound, {volume: .2});
+
     // manage the current running state of the game board
     const [ running, setRunning ] = useState(false);
     const runningRef = useRef(running);
@@ -71,9 +82,10 @@ const Board = () => {
                         
                         // check the game board for neighboring cells for the next generation
                         operations.forEach(([x, y]) => {
+                            // wrap the cells around the edges of the game board
                             const newI = (i + x + numCols) % numCols;
                             const newJ = (j + y + numRows) % numRows;
-                            if(newI >= 0 & newI < numRows && newJ >= 0 && newJ < numCols) {
+                            if(newI >= 0 && newI < numRows && newJ >= 0 && newJ < numCols) {
                                 neighbors += g[newI][newJ]
                             }
                         })
@@ -104,14 +116,18 @@ const Board = () => {
                         runningRef.current = true;
                         runSim();
                     }
-                }}>{running ? <img alt='pause' className='pause' src={pause}/> : <img alt='play' className='play' src={play}/>}</button>
+                }}>
+                    {running ? <img alt='pause' className='pause' src={pause}/> : <img alt='play' className='play' src={play}/>}
+                </button>
 
                 {/* clear the game board */}
                 <button onClick={() => {
                     setGrid(generateGrid());
                     setGen(0);
                     setRunning(false);
-                }}><img alt='clear' className='clear' src={clear}/></button>
+                }}>
+                    <img alt='clear' className='clear' src={clear}/>
+                </button>
 
                 {/* generate a random game board */}
                 <button onClick={() => {
@@ -124,7 +140,9 @@ const Board = () => {
                     setGrid(rows);
                     setRunning(false);
                     setGen(0);
-                }}><img alt='random' className='random' src={random}/></button>
+                }}>
+                    <img alt='random' className='random' src={random}/>
+                </button>
             </div>
 
             {/* speed controls */}
@@ -140,9 +158,9 @@ const Board = () => {
         <div className='game'>
             {/* presets */}
             <div className='presets'>
-                <button onClick={() => setGrid(glider)}><div>Gliders</div><img src={glide}/></button>
-                <button onClick={() => setGrid(spaceships)}><div>Spaceships</div><img src={space}/></button>
-                <button onClick={() => setGrid(oscillator)}><div>Oscillators</div><img src={osc}/></button>
+                <button onClick={() => setGrid(glider)}><div>Gliders</div><img alt='glider preview' src={glide}/></button>
+                <button onClick={() => setGrid(spaceships)}><div>Spaceships</div><img alt='spaceship preview' src={space}/></button>
+                <button onClick={() => setGrid(oscillator)}><div>Oscillators</div><img alt='oscillator preview' src={osc}/></button>
             </div>
 
             {/* allow user to populate game board with cells on click*/}
@@ -157,6 +175,8 @@ const Board = () => {
                                     const newGrid = produce(grid, gridCopy => {
                                         gridCopy[i][j] = grid[i][j] ? 0 : 1;
                                     })
+                                    // play a random sound effect onCLick
+                                    //playSound();
                                     return !running ? setGrid(newGrid) : null;
                                 }}
                                 style={{
